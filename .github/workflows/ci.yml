@@ -45,7 +45,7 @@ jobs:
               run: |
                   chmod 0600 ./config.toml
                   uv run vdsnow
-                  uv run vdsnow connection test
+                  uv run vdsnow connection test --no-local
                   uv run vdsnow check folder-structure
 
             # Create Ephemeral Schema and use it across all steps
