@@ -54,8 +54,8 @@ jobs:
 
             - name: Create Stage if First Run
               run: |
-                  snow sql -q "CREATE STAGE IF NOT EXISTS ${{SNOWFLAKE_CONNECTIONS_HEADLESS_DATABASE}}.VDSNOW_INTERNAL.VDSNOW" -c headless
+                  snow sql -q "CREATE STAGE IF NOT EXISTS $SNOWFLAKE_CONNECTIONS_HEADLESS_DATABASE.VDSNOW_INTERNAL.VDSNOW" -c headless
 
             - name: Refresh vdstate.json file
               run: |
-                  snow sql -q "PUT file:///home/runner/work/vdsnow-example/vdsnow-example/vdstate.json @${{SNOWFLAKE_CONNECTIONS_HEADLESS_DATABASE}}.VDSNOW_INTERNAL.VDSNOW OVERWRITE = TRUE" -c headless
+                  snow sql -q "PUT file:///home/runner/work/vdsnow-example/vdsnow-example/vdstate.json @$SNOWFLAKE_CONNECTIONS_HEADLESS_DATABASE.VDSNOW_INTERNAL.VDSNOW OVERWRITE = TRUE" -c headless
