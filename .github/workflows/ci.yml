@@ -1,0 +1,63 @@
+name: Ci Process
+
+on:
+    pull_request:
+        branches:
+            - dev
+            - main
+    workflow_dispatch:
+
+jobs:
+    version:
+        name: test-code-objects
+        runs-on: ubuntu-latest
+        environment: ${{ github.base_ref == 'main' && 'prd' || 'dev' }}
+        env:
+            SNOWFLAKE_CONNECTIONS_HEADLESS_AUTHENTICATOR: SNOWFLAKE_JWT
+            SNOWFLAKE_CONNECTIONS_HEADLESS_USER: ${{ vars.SNOWFLAKE_RAW_USER }}
+            SNOWFLAKE_CONNECTIONS_HEADLESS_ACCOUNT: ${{ vars.SNOWFLAKE_ACCOUNT }}
+            SNOWFLAKE_CONNECTIONS_HEADLESS_PRIVATE_KEY_RAW: ${{ secrets.SNOWFLAKE_RAW_PRIVATE_KEY }}
+            SNOWFLAKE_CONNECTIONS_HEADLESS_DATABASE: ${{ vars.SNOWFLAKE_CI_DATABASE }}
+            SNOWFLAKE_CONNECTIONS_HEADLESS_ROLE: ${{ vars.SNOWFLAKE_RAW_ROLE }}
+            SNOWFLAKE_CONNECTIONS_HEADLESS_WAREHOUSE: ${{ vars.SNOWFLAKE_RAW_WH }}
+            SNOWFLAKE_HOME: .
+            ENV_VAR: ${{ github.base_ref == 'main' && 'prd' || 'dev' }}
+            VDSNOW_ENV: headless
+
+        steps:
+            # Checkout step is necessary if you want to use a config file from your repo
+            - name: Checkout repo
+              uses: actions/checkout@v4
+
+            - name: Install uv
+              uses: astral-sh/setup-uv@v5
+
+            - name: "Set up Python"
+              uses: actions/setup-python@v5
+              with:
+                  python-version-file: "pyproject.toml"
+
+            - name: Install the project
+              run: uv sync
+
+            # Testing connection to Snowflake (without schema)
+            - name: Test Connection and Folder Structure(snowcli)
+              run: |
+                  chmod 0600 ./config.toml
+                  uv run vdsnow
+                  uv run vdsnow connection test
+                  uv run vdsnow check folder-structure
+
+            # Create Ephemeral Schema and use it across all steps
+            - name: Create Ephemeral Schema and Deploy objects in it
+              env:
+                  SNOWFLAKE_CONNECTIONS_HEADLESS_SCHEMA: DEV_CI_SCHEMA_${{ github.event.pull_request.number }}
+              run: |
+                  uv run vdsnow sql execute -f ./setup/ci/setup.sql
+
+            - name: Drop Schema
+              if: always() # Ensure this step runs even if previous steps fail
+              env:
+                  SNOWFLAKE_CONNECTIONS_HEADLESS_SCHEMA: DEV_CI_SCHEMA_${{ github.event.pull_request.number }}
+              run: |
+                  uv run vdsnow sql execute -f ./setup/ci/drop_schema.sql

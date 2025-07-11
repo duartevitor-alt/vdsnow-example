@@ -1,0 +1,61 @@
+name: CD - Deployment of Snowflake Objects
+
+on:
+    push:
+        branches:
+            - dev
+            - main
+    workflow_dispatch:
+
+jobs:
+    version:
+        name: deployment-sf-objects
+        runs-on: ubuntu-latest
+        environment: ${{ github.ref_name == 'main' && 'prd' || 'dev' }}
+        env:
+            SNOWFLAKE_CONNECTIONS_HEADLESS_AUTHENTICATOR: SNOWFLAKE_JWT
+            SNOWFLAKE_CONNECTIONS_HEADLESS_USER: ${{ vars.SNOWFLAKE_RAW_USER }}
+            SNOWFLAKE_CONNECTIONS_HEADLESS_ACCOUNT: ${{ vars.SNOWFLAKE_ACCOUNT }}
+            SNOWFLAKE_CONNECTIONS_HEADLESS_PRIVATE_KEY_RAW: ${{ secrets.SNOWFLAKE_RAW_PRIVATE_KEY }}
+            SNOWFLAKE_CONNECTIONS_HEADLESS_DATABASE: ${{ vars.SNOWFLAKE_RAW_DATABASE }}
+            SNOWFLAKE_CONNECTIONS_HEADLESS_SCHEMA: ${{ vars.SNOWFLAKE_RAW_SCHEMA }}
+            SNOWFLAKE_CONNECTIONS_HEADLESS_ROLE: ${{ vars.SNOWFLAKE_RAW_ROLE }}
+            SNOWFLAKE_CONNECTIONS_HEADLESS_WAREHOUSE: ${{ vars.SNOWFLAKE_RAW_WH }}
+            SNOWFLAKE_HOME: .
+            ENV_VAR: ${{ github.ref_name == 'main' && 'prd' || 'dev' }}
+            VDSNOW_ENV: headless
+
+        steps:
+            # Checkout step is necessary if you want to use a config file from your repo
+            - name: Checkout repo
+              uses: actions/checkout@v4
+
+            - name: Install uv
+              uses: astral-sh/setup-uv@v5
+
+            - name: "Set up Python"
+              uses: actions/setup-python@v5
+              with:
+                  python-version-file: "pyproject.toml"
+
+            - name: Install the project
+              run: uv sync
+
+            - name: Execute VD Snowflake CLI command
+              run: |
+                  chmod 0600 ./config.toml
+                  uv run vdsnow
+                  uv run vdsnow connection test
+                  uv run vdsnow check folder-structure
+
+            - name: Deploy Data and Code Objects
+              run: |
+                  uv run vdsnow sql execute -f ./setup/setup.sql --audit --env ${{ github.ref_name == 'main' && 'prd' || 'dev' }}
+
+            - name: Create Stage if First Run
+              run: |
+                  snow sql -q "CREATE STAGE IF NOT EXISTS ${{SNOWFLAKE_CONNECTIONS_HEADLESS_DATABASE}}.VDSNOW_INTERNAL.VDSNOW" -c headless
+
+            - name: Refresh vdstate.json file
+              run: |
+                  snow sql -q "PUT file:///home/runner/work/vdsnow-example/vdsnow-example/vdstate.json @${{SNOWFLAKE_CONNECTIONS_HEADLESS_DATABASE}}.VDSNOW_INTERNAL.VDSNOW OVERWRITE = TRUE" -c headless

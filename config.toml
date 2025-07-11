@@ -1,0 +1,21 @@
+default_connection_name = "local"
+
+[connections.local]
+account = ""
+user = ""
+role = ""
+warehouse = ""
+database = ""
+schema = ""
+authenticator = "SNOWFLAKE_JWT"
+private_key_path = ""
+
+[connections.headless]
+account = ""
+user = ""
+role = ""
+warehouse = ""
+database = ""
+schema = ""
+authenticator = "SNOWFLAKE_JWT"
+private_key_raw = ""
