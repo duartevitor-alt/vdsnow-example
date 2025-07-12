@@ -834,7 +834,7 @@ wheels = [
 
 [[package]]
 name = "vdsnow"
-version = "0.5.2"
+version = "0.5.3"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "click" },
@@ -845,9 +845,9 @@ dependencies = [
     { name = "tomli" },
     { name = "tomli-w" },
 ]
-sdist = { url = "https://files.pythonhosted.org/packages/1f/83/2e0564c46be3c7c19d690677bf19f618f24e3ff7281ad9ae632c51c42db6/vdsnow-0.5.2.tar.gz", hash = "sha256:e080bdf013b694538f47c294744c87b3251c7f7614a9dfada161f933a17ce94d", size = 68442 }
+sdist = { url = "https://files.pythonhosted.org/packages/f3/44/f942200ace5b082f06c967cd7262e300dd4c84556078d971dc4b15e53214/vdsnow-0.5.3.tar.gz", hash = "sha256:dd8a64376020fed8936c568c56c5952a2a83c82dc47f6b6e005805a10c00ba34", size = 68183 }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/3d/f6/a05bc9af4413b54a56cbdfedc4ee7ddc099ca0da911ddb6eaf067c882795/vdsnow-0.5.2-py3-none-any.whl", hash = "sha256:89edbc8f8a088ab9813b88e5939fb4f1c3abbb8097f68c3aa40d01f40f2e2974", size = 24155 },
+    { url = "https://files.pythonhosted.org/packages/06/d6/d05790bb289a73388c74f2a169a6b73e284c98a7b577fd229a71dc86d537/vdsnow-0.5.3-py3-none-any.whl", hash = "sha256:4483e9de5117491b2eb57b65018bed31e60586f4c69aacf5d160830130b6127b", size = 23711 },
 ]
 
 [[package]]
@@ -859,7 +859,7 @@ dependencies = [
 ]
 
 [package.metadata]
-requires-dist = [{ name = "vdsnow", specifier = ">=0.5.2" }]
+requires-dist = [{ name = "vdsnow", specifier = ">=0.5.3" }]
 
 [[package]]
 name = "wcwidth"
