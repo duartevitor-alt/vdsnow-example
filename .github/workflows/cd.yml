@@ -48,9 +48,13 @@ jobs:
                   uv run vdsnow connection test --no-local
                   uv run vdsnow check folder-structure
 
+            - name: Get State From Snowflake
+              run: |
+                  uv run vdsnow sql get-state-from-remote --db $SNOWFLAKE_CONNECTIONS_HEADLESS_DATABASE --schema VDSNOW_INTERNAL || true
+
             - name: Deploy Data and Code Objects
               run: |
-                  uv run vdsnow sql execute -f ./setup/setup.sql --audit --env ${{ github.ref_name == 'main' && 'prd' || 'dev' }}
+                  uv run vdsnow sql execute -f ./setup/setup.sql --audit --env ${{ github.ref_name == 'main' && 'prd' || 'dev' }} --differ
 
             - name: Create Stage if First Run
               run: |
