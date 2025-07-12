@@ -58,4 +58,4 @@ jobs:
 
             - name: Refresh vdstate.json file
               run: |
-                  uv run snow sql -q "PUT file:///home/runner/work/vdsnow-example/vdsnow-example/vdstate.json @$SNOWFLAKE_CONNECTIONS_HEADLESS_DATABASE.VDSNOW_INTERNAL.VDSNOW OVERWRITE = TRUE" -c headless
+                  uv run snow sql -q "PUT file:///home/runner/work/vdsnow-example/vdsnow-example/vdstate.json @$SNOWFLAKE_CONNECTIONS_HEADLESS_DATABASE.VDSNOW_INTERNAL.VDSNOW OVERWRITE = TRUE AUTO_COMPRESS = FALSE" -c headless
