@@ -1,4 +1,4 @@
-In this tutorial, we will learn how to use the vdsnow python package that wraps the snowflake cli and helps you managing your snowflake resources. For more information, please visit the [vdsnow documentation](https://github.com/vdubois/vdsnow).
+In this tutorial, we will learn how to use the vdsnow python package that wraps the snowflake cli and helps you managing your snowflake resources. For more information, please visit the [vdsnow documentation](https://pypi.org/project/vdsnow).
 
 ## Snowflake Setup
 
@@ -7,7 +7,7 @@ I'm using a snowflake trial account. Everything that you need to setup is docume
 
 ## Installation
 
-In this walk through, we will use uv as a dependency manager to install vdsnow. To initialize the project, run the following command (ensure that you have uv installed [uv](https://github.com/vdubois/uv)):
+In this walk through, we will use uv as a dependency manager to install vdsnow. To initialize the project, run the following command (ensure that you have uv installed [uv](https://docs.astral.sh/uv)):
 
 ```bash
 uv init my-project && cd my-project
