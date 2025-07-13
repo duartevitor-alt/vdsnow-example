@@ -54,11 +54,11 @@ jobs:
               env:
                   SNOWFLAKE_CONNECTIONS_HEADLESS_SCHEMA: DEV_CI_SCHEMA_${{ github.event.pull_request.number }}
               run: |
-                  uv run snow sql -f ./setup/ci/setup.sql
+                  uv run snow sql -f ./setup/ci/setup.sql --connection headless
 
             - name: Drop Schema
               if: always() # Ensure this step runs even if previous steps fail
               env:
                   SNOWFLAKE_CONNECTIONS_HEADLESS_SCHEMA: DEV_CI_SCHEMA_${{ github.event.pull_request.number }}
               run: |
-                  uv run snow sql -f ./setup/ci/drop_schema.sql
+                  uv run snow sql -f ./setup/ci/drop_schema.sql --connection headless
