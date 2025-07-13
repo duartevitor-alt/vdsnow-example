@@ -61,5 +61,6 @@ jobs:
                   uv run snow sql -q "CREATE STAGE IF NOT EXISTS $SNOWFLAKE_CONNECTIONS_HEADLESS_DATABASE.VDSNOW_INTERNAL.VDSNOW" -c headless
 
             - name: Refresh vdstate.json file
+              if: ${{ github.ref_name }} == 'main' # Ideally try to have multiple vdstate.json files per environment, here's a simplified version.
               run: |
                   uv run snow sql -q "PUT file:///home/runner/work/vdsnow-example/vdsnow-example/vdstate.json @$SNOWFLAKE_CONNECTIONS_HEADLESS_DATABASE.VDSNOW_INTERNAL.VDSNOW OVERWRITE = TRUE AUTO_COMPRESS = FALSE" -c headless

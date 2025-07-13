@@ -200,6 +200,8 @@ uv run vdsnow sql execute -f ./setup/setup.sql --differ
 
 ![--differ](./.github/assets/differ2.png)
 
+The differ flag may be very useful while deploying snowflake objects that don't have CREATE OR ALTER statement available.
+
 
 ### Managing Dependencies
 
@@ -246,7 +248,7 @@ It may be useful for debugging purposes or understanding the current state.
 
 ## CI/CD
 
-A CI and CD workflow file is definied in [here](./.github/workflows/ci-cd.yml) and [here](./.github/workflows/ci-cd.yml) and can be used as a guide for your CI/CD pipeline's needs.
+A CI and CD workflow file is definied in [here - ci](./.github/workflows/ci.yml) and [here - cd](./.github/workflows/cd.yml) and can be used as a guide for your CI/CD pipeline's needs.
 
 For the CI process, if you want to reproduce this kind of approach, you can use the following command:
 
@@ -262,3 +264,15 @@ This command creates a ci folder inside setup/, which will be used in the CI pro
 vdsnow also comes with auditability features, which include tracking changes, versioning, and auditing of data modifications. These features help ensure data integrity and compliance with regulatory requirements. Whenever a vdsnow sql execute command is executed against the destination database, the changes are tracked and logged for auditing purposes into a logging table.
 
 ## Other commands
+```bash
+uv run vdsnow sql refresh-state # Whenever you want to refresh vdstate.json file
+```
+```bash
+uv run vdsnow sql execute -q "SELECT 'Hello World'" <--local/--no-local> # Execute sql query. --local/--no-local flag is always available for sql commands, if not specified, it will check an env var.
+```
+
+## Final Notes
+
+We do encourage you to use vdsnow in your projects and contribute to its development. Your feedback and contributions are highly appreciated. Rememeber that vdsnow is just a wrapper of snow (snowcli), therefore feel free to combine snow and vdsnow together.
+
+My goal with vdsnow is to always include new features and use cases that I face with Snowflake, for that reason, one more time, your feedback is highly appreciated!!

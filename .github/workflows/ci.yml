@@ -49,15 +49,16 @@ jobs:
                   uv run vdsnow check folder-structure
 
             # Create Ephemeral Schema and use it across all steps
+            # Here snow should be used rather than vdsnow, cause the context should not be automatically detected
             - name: Create Ephemeral Schema and Deploy objects in it
               env:
                   SNOWFLAKE_CONNECTIONS_HEADLESS_SCHEMA: DEV_CI_SCHEMA_${{ github.event.pull_request.number }}
               run: |
-                  uv run vdsnow sql execute -f ./setup/ci/setup.sql
+                  uv run snow sql -f ./setup/ci/setup.sql --connection headless
 
             - name: Drop Schema
               if: always() # Ensure this step runs even if previous steps fail
               env:
                   SNOWFLAKE_CONNECTIONS_HEADLESS_SCHEMA: DEV_CI_SCHEMA_${{ github.event.pull_request.number }}
               run: |
-                  uv run vdsnow sql execute -f ./setup/ci/drop_schema.sql
+                  uv run snow sql -f ./setup/ci/drop_schema.sql --connection headless
