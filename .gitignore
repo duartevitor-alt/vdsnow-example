@@ -10,5 +10,5 @@ wheels/
 .venv
 
 vdstate.json
-.cli_version.__pycache
+.cli_version.cache
 logs/
